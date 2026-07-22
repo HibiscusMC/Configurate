@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.indra.sonatype)
     alias(libs.plugins.nexusPublish)
     id 'java-base'
+    id 'maven-publish'
     id 'org.spongepowered.configurate.build.base'
 }
 
@@ -84,5 +85,18 @@ gitPublish {
         include(".gitattributes")
         include("**/") // include everything in directories
         exclude("/*.html")
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = 'HibiscusMCRepository'
+            url = 'https://repo.hibiscusmc.com'
+            credentials {
+                username = System.getenv('HMC_REPOSILITE_USER')
+                password = System.getenv('HMC_REPOSILITE_SECRET')
+            }
+        }
     }
 }
