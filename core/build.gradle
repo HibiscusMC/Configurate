@@ -57,3 +57,27 @@ sourceSets {
         }
     }
 }
+
+
+publishing {
+    repositories {
+        maven {
+            name = 'HibiscusMCRepository'
+            url = 'https://repo.hibiscusmc.com/releases'
+            credentials {
+                username = System.getenv('HMC_REPOSILITE_USER')
+                password = System.getenv('HMC_REPOSILITE_SECRET')
+            }
+        }
+    }
+
+    publications {
+        mavenYaml(MavenPublication) {
+            groupId = 'org.spongepowered'
+            artifactId = 'configurate-core'
+            version = '4.3.0-SNAPSHOT'
+
+            from components.java
+        }
+    }
+}

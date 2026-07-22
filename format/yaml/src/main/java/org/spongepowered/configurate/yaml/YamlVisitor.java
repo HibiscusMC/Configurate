@@ -93,7 +93,7 @@ final class YamlVisitor implements ConfigurationVisitor<YamlVisitor.State, Void,
                 }
                 for (final String line : COMMENT_SPLIT.split(comment, -1)) {
                     if (line.isEmpty()) {
-                        state.emit(COMMENT_BLANK_LINE);
+//                        state.emit(COMMENT_BLANK_LINE);
                     } else {
                         if (line.codePointAt(0) != '#') { // allow lines that are only the comment character, for box drawing
                             state.emit(new CommentEvent(CommentType.BLOCK, " " + line, null, null));
