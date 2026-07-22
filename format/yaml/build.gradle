@@ -1,5 +1,6 @@
 plugins {
     id 'org.spongepowered.configurate.build.shadow-component'
+    id 'maven-publish'
     id 'groovy' // for tests
 }
 
@@ -23,5 +24,28 @@ dependencies {
 tasks {
     shadowJar {
         relocate("org.yaml.snakeyaml", "${project.group}.configurate.yaml.internal.snakeyaml")
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = 'HibiscusMCRepository'
+            url = 'https://repo.hibiscusmc.com/releases'
+            credentials {
+                username = System.getenv('HMC_REPOSILITE_USER')
+                password = System.getenv('HMC_REPOSILITE_SECRET')
+            }
+        }
+    }
+
+    publications {
+        mavenYaml(MavenPublication) {
+            groupId = 'org.spongepowered'
+            artifactId = 'configurate-yaml'
+            version = '4.3.0-SNAPSHOT'
+
+            artifact shadowJar
+        }
     }
 }
