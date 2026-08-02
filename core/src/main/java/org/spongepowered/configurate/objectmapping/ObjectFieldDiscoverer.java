@@ -156,7 +156,7 @@ class ObjectFieldDiscoverer implements FieldDiscoverer<Map<Field, Object>> {
                         if (val != null) {
                             intermediate.put(field, val);
                         } else {
-                            intermediate.put(field, new ImplicitProvider(implicitProvider, sourceIsEmpty));
+                            intermediate.put(field, new ImplicitProvider(sourceIsEmpty ? () -> null : implicitProvider, sourceIsEmpty));
                         }
                     }, field::get);
         }

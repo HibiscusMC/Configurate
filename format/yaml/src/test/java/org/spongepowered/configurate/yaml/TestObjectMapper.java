@@ -30,7 +30,6 @@ public class TestObjectMapper {
         loader.save(node);
 
         System.out.println(instance);
-        System.out.println(instance.testString());
     }
 
     @ConfigSerializable
@@ -39,13 +38,39 @@ public class TestObjectMapper {
         @Setting("test-string")
         private String testString = "This is a test string";
 
+        @Setting("sub-object")
+        private SubObject subObject = new SubObject();
+
         public String testString() {
             return testString;
         }
 
         @Override
         public String toString() {
-            return "[ObjectMapper testString=" + testString + "]";
+            return "[ObjectMapper testString=" + testString + ", subObject=" + subObject + "]";
+        }
+
+        @ConfigSerializable
+        static class SubObject {
+
+            @Setting("sub-string")
+            private String subString = "substring";
+
+            @Setting("sub-int")
+            private Integer subInt = 4;
+
+            public String subString() {
+                return subString;
+            }
+
+            public Integer subInt() {
+                return subInt;
+            }
+
+            @Override
+            public String toString() {
+                return "SubObject [subString=" + subString + ", subInt=" + subInt + "]";
+            }
         }
     }
 
