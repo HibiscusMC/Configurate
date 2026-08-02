@@ -78,7 +78,7 @@ final class RecordFieldDiscoverer implements FieldDiscoverer<@Nullable Object[]>
                 final AnnotatedElement annotationContainer = Types.combinedAnnotations(component, backingField, accessor);
                 final int targetIdx = i;
                 collector.accept(name, resolvedType, annotationContainer,
-                    (intermediate, el, implicitSupplier) -> {
+                    (intermediate, el, implicitSupplier, source) -> {
                         if (el != null) {
                             intermediate[targetIdx] = el;
                         } else {

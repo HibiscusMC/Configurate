@@ -21,6 +21,7 @@ import static io.leangen.geantyref.GenericTypeReflector.erase;
 
 import com.google.auto.value.AutoValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.objectmapping.meta.Constraint;
 import org.spongepowered.configurate.objectmapping.meta.NodeResolver;
@@ -169,7 +170,7 @@ public abstract class FieldData<I, O> {
          * @param implicitInitializer the implicit initializer
          * @since 4.0.0
          */
-        void accept(I intermediate, @Nullable Object newValue, Supplier<@Nullable Object> implicitInitializer);
+        void accept(I intermediate, @Nullable Object newValue, Supplier<@Nullable Object> implicitInitializer, @NotNull ConfigurationNode source);
     }
 
 }

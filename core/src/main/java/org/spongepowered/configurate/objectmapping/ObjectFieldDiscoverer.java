@@ -58,9 +58,9 @@ class ObjectFieldDiscoverer implements FieldDiscoverer<Map<Field, Object>> {
     private final boolean requiresInstanceCreation;
 
     ObjectFieldDiscoverer(
-        final CheckedFunction<AnnotatedType, @Nullable Supplier<Object>, SerializationException> instanceFactory,
-        final @Nullable String instanceUnavailableErrorMessage,
-        final boolean requiresInstanceCreation
+            final CheckedFunction<AnnotatedType, @Nullable Supplier<Object>, SerializationException> instanceFactory,
+            final @Nullable String instanceUnavailableErrorMessage,
+            final boolean requiresInstanceCreation
     ) {
         this.instanceFactory = instanceFactory;
         if (instanceUnavailableErrorMessage == null) {
@@ -73,7 +73,7 @@ class ObjectFieldDiscoverer implements FieldDiscoverer<Map<Field, Object>> {
 
     @Override
     public <V> @Nullable InstanceFactory<Map<Field, Object>> discover(final AnnotatedType target,
-            final FieldCollector<Map<Field, Object>, V> collector) throws SerializationException {
+                                                                      final FieldCollector<Map<Field, Object>, V> collector) throws SerializationException {
         final Class<?> clazz = erase(target.getType());
         if (clazz.isInterface()) {
             throw new SerializationException(target.getType(), "ObjectMapper can only work with concrete types");
@@ -108,11 +108,11 @@ class ObjectFieldDiscoverer implements FieldDiscoverer<Map<Field, Object>> {
                     try {
                         // Handle implicit field initialization by detecting any existing information in the object
                         if (entry.getValue() instanceof ImplicitProvider) {
-                            final @Nullable Object implicit = ((ImplicitProvider) entry.getValue()).provider.get();
-                            if (implicit != null) {
-                                if (entry.getKey().get(instance) == null) {
-                                    entry.getKey().set(instance, implicit);
-                                }
+                            ImplicitProvider value = (ImplicitProvider) entry.getValue();
+                            final @Nullable Object implicit = value.provider.get();
+
+                            if (entry.getKey().get(instance) == null || !value.emptySource) {
+                                entry.getKey().set(instance, implicit);
                             }
                         } else {
                             entry.getKey().set(instance, entry.getValue());
@@ -150,22 +150,26 @@ class ObjectFieldDiscoverer implements FieldDiscoverer<Map<Field, Object>> {
             field.setAccessible(true);
             final AnnotatedType fieldType = getFieldType(field, clazz);
             fieldMaker.accept(field.getName(), fieldType, Types.combinedAnnotations(fieldType, field),
-                              (intermediate, val, implicitProvider) -> {
-                    if (val != null) {
-                        intermediate.put(field, val);
-                    } else {
-                        intermediate.put(field, new ImplicitProvider(implicitProvider));
-                    }
-                }, field::get);
+                    (intermediate, val, implicitProvider, source) -> {
+                        boolean sourceIsEmpty = source.childrenMap().isEmpty();
+
+                        if (val != null) {
+                            intermediate.put(field, val);
+                        } else {
+                            intermediate.put(field, new ImplicitProvider(implicitProvider, sourceIsEmpty));
+                        }
+                    }, field::get);
         }
     }
 
     static class ImplicitProvider {
 
         final Supplier<Object> provider;
+        final boolean emptySource;
 
-        ImplicitProvider(final Supplier<Object> provider) {
+        ImplicitProvider(final Supplier<Object> provider, final boolean emptySource) {
             this.provider = provider;
+            this.emptySource = emptySource;
         }
 
     }
