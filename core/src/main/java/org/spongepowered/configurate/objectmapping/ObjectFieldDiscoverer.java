@@ -111,7 +111,7 @@ class ObjectFieldDiscoverer implements FieldDiscoverer<Map<Field, Object>> {
                             ImplicitProvider value = (ImplicitProvider) entry.getValue();
                             final @Nullable Object implicit = value.provider.get();
 
-                            if (entry.getKey().get(instance) == null || !value.emptySource) {
+                            if (entry.getKey().get(instance) == null/* || !value.emptySource*/) {
                                 entry.getKey().set(instance, implicit);
                             }
                         } else {
