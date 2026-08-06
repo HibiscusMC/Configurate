@@ -43,7 +43,7 @@ publishing {
         mavenYaml(MavenPublication) {
             groupId = 'org.spongepowered'
             artifactId = 'configurate-yaml'
-            version = '4.4.0-HMC'
+            version = '4.4.2-HMC'
 
             artifact shadowJar
         }

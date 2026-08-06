@@ -75,7 +75,7 @@ publishing {
         mavenYaml(MavenPublication) {
             groupId = 'org.spongepowered'
             artifactId = 'configurate-core'
-            version = '4.4.0-HMC'
+            version = '4.4.2-HMC'
 
             from components.java
         }
