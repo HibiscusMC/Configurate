@@ -35,10 +35,10 @@ public class TestObjectMapper {
     @ConfigSerializable
     static class ObjectMapper {
 
-        @Setting("test-string")
+        @Setting(value = "test-string", required = true)
         private String testString = "This is a test string";
 
-        @Setting("sub-object")
+        @Setting(value = "sub-object")
         private SubObject subObject = new SubObject();
 
         public String testString() {
@@ -53,10 +53,10 @@ public class TestObjectMapper {
         @ConfigSerializable
         static class SubObject {
 
-            @Setting("sub-string")
+            @Setting(value = "sub-string", required = true)
             private String subString = "substring";
 
-            @Setting("sub-int")
+            @Setting(value = "sub-int", required = true)
             private Integer subInt = 4;
 
             public String subString() {

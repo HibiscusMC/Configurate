@@ -21,6 +21,8 @@ import static io.leangen.geantyref.GenericTypeReflector.getExactSuperType;
 import static io.leangen.geantyref.GenericTypeReflector.getFieldType;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.objectmapping.meta.Setting;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.util.CheckedFunction;
 import org.spongepowered.configurate.util.Types;
@@ -111,7 +113,9 @@ class ObjectFieldDiscoverer implements FieldDiscoverer<Map<Field, Object>> {
                             ImplicitProvider value = (ImplicitProvider) entry.getValue();
                             final @Nullable Object implicit = value.provider.get();
 
-                            if (entry.getKey().get(instance) == null/* || !value.emptySource*/) {
+                            Setting setting = entry.getKey().getAnnotation(Setting.class);
+
+                            if (!setting.required()) {
                                 entry.getKey().set(instance, implicit);
                             }
                         } else {
@@ -151,12 +155,10 @@ class ObjectFieldDiscoverer implements FieldDiscoverer<Map<Field, Object>> {
             final AnnotatedType fieldType = getFieldType(field, clazz);
             fieldMaker.accept(field.getName(), fieldType, Types.combinedAnnotations(fieldType, field),
                     (intermediate, val, implicitProvider, source) -> {
-                        boolean sourceIsEmpty = source.childrenMap().isEmpty();
-
                         if (val != null) {
                             intermediate.put(field, val);
                         } else {
-                            intermediate.put(field, new ImplicitProvider(sourceIsEmpty ? () -> null : implicitProvider, sourceIsEmpty));
+                            intermediate.put(field, new ImplicitProvider(implicitProvider));
                         }
                     }, field::get);
         }
@@ -165,11 +167,9 @@ class ObjectFieldDiscoverer implements FieldDiscoverer<Map<Field, Object>> {
     static class ImplicitProvider {
 
         final Supplier<Object> provider;
-        final boolean emptySource;
 
-        ImplicitProvider(final Supplier<Object> provider, final boolean emptySource) {
+        ImplicitProvider(final Supplier<Object> provider) {
             this.provider = provider;
-            this.emptySource = emptySource;
         }
 
     }

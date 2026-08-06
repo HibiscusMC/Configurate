@@ -53,9 +53,14 @@ public @interface Setting {
      * Whether a field should use its containing node for its value.
      *
      * @return whether this field should source its data from the node of
-     *     its container
+     * its container
      * @since 4.0.0
      */
     boolean nodeFromParent() default false;
 
+    /**
+     * @return whether this field should be regenerated from its default value if removed
+     * @since HMC-Fork
+     */
+    boolean required() default false;
 }
